@@ -34,11 +34,25 @@ public class GmailReader {
         SESSION = Session.getInstance(properties);
     }
 
-    private Message getLastMessages(Message[] messages) throws ResponseStatusException {
+    private Message getLastMessages(Message[] messages) throws ResponseStatusException, MessagingException {
         if (messages == null || messages.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NO_MESSAGES_FOUND.getMessage());
         }
-        return messages[messages.length - 1];
+        int idx = messages.length - 1;
+        // 통신 3사의 도메인 중 하나가 발신자에 포함되어 있는 메일을 찾음
+        while (idx >= 0) {
+            Address[] from = messages[idx].getFrom();
+            for (Address address : from) {
+                String addressStr = address.toString();
+                for (String domain : DOMAINS) {
+                    if (addressStr.contains(domain)) {
+                        return messages[idx];
+                    }
+                }
+            }
+            idx--;
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NO_MESSAGES_FOUND.getMessage());
     }
 
     private String getBody(Message message) throws IOException, MessagingException {
@@ -58,6 +72,10 @@ public class GmailReader {
     }
 
     public void validate(String phoneNumber, String code) throws ResponseStatusException {
+        // 전화번호가 숫자로만 이루어져 있는지 확인
+        if (phoneNumber.matches(".*[^0-9].*")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, EMAIL_VALIDATION_FAILED.getMessage());
+        }
         try (Store store = SESSION.getStore()) {
             store.connect(envBean.getEmailUsername(), envBean.getEmailPassword());
 
@@ -73,12 +91,12 @@ public class GmailReader {
                 System.out.print("lastMessage: ");
                 System.out.println(Arrays.toString(lastMessage.getAllRecipients()));
                 System.out.print("lastMessage: ");
-                System.out.println(Arrays.toString(lastMessage.getFrom()));
+                System.out.println(lastMessage.getFrom()[0]);
                 // 메일의 내용을 가져옴
                 String body = getBody(lastMessage);
                 // 메일 내용과 코드가 일치하는지 확인
                 if (!body.equals(code)) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, EMAIL_VALIDATION_FAILED.getMessage());
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, EMAIL_VALIDATION_FAILED.getMessage());
                 }
             }
         } catch (ResponseStatusException e) {
