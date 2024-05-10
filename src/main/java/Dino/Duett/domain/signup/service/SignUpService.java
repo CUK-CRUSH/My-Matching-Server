@@ -1,6 +1,7 @@
 package Dino.Duett.domain.signup.service;
 
 import Dino.Duett.domain.authentication.VerificationCodeManager;
+import Dino.Duett.domain.authentication.dto.VerificationCodeDto;
 import Dino.Duett.domain.member.dto.MemberDto;
 import Dino.Duett.domain.member.entity.Member;
 import Dino.Duett.domain.member.repository.MemberRepository;
@@ -40,6 +41,14 @@ public class SignUpService {
 
         return SignUpRes.builder()
                 .member(memberDto)
+                .build();
+    }
+
+    // 인증 코드 요청
+    public VerificationCodeDto requestCode(String phoneNumber) {
+        String code = verificationCodeManager.generateVerificationCode(phoneNumber);
+        return VerificationCodeDto.builder()
+                .code(code)
                 .build();
     }
 }
