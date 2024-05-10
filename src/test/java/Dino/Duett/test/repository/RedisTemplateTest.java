@@ -1,4 +1,4 @@
-package Dino.Duett.repository;
+package Dino.Duett.test.repository;
 
 import Dino.Duett.domain.authentication.VerificationCodeManager;
 import Dino.Duett.gmail.GmailReader;
@@ -12,15 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-@DisplayName("RedisTemplate 테스트")
 @SpringBootTest
+@DisplayName("RedisTemplate 테스트")
 public class RedisTemplateTest {
     @Autowired
     private StringRedisTemplate redisTemplate;
-    @Autowired
-    private GmailReader gmailReader;
-    @Autowired
-    private VerificationCodeManager verificationCodeManager;
 
     @Test
     @DisplayName("Redis 작성 테스트")

@@ -2,8 +2,10 @@ package Dino.Duett.domain.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
+@Getter
 @AllArgsConstructor
 public class MemberDto {
     private Long id;

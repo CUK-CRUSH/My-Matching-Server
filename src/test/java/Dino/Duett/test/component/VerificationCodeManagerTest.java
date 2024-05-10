@@ -1,4 +1,4 @@
-package Dino.Duett.component;
+package Dino.Duett.test.component;
 
 import Dino.Duett.domain.authentication.VerificationCodeManager;
 import org.junit.jupiter.api.DisplayName;

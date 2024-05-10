@@ -9,11 +9,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @Table(name = "member")
 @RequiredArgsConstructor
 public class Member extends BaseEntity {

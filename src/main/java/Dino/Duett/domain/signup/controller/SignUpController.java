@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "SignUp", description = "회원가입 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/signup")
+@RequestMapping("/api/v1/sign-up")
 public class SignUpController {
     private final SignUpService signUpService;
 

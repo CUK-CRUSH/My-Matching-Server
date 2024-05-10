@@ -1,4 +1,4 @@
-package Dino.Duett.component;
+package Dino.Duett.test.component;
 
 import Dino.Duett.config.EnvBean;
 import Dino.Duett.gmail.GmailReader;
