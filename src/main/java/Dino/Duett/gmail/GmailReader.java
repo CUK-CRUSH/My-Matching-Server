@@ -3,19 +3,15 @@ package Dino.Duett.gmail;
 import Dino.Duett.config.EnvBean;
 import jakarta.mail.*;
 import jakarta.mail.search.FromStringTerm;
-import jakarta.mail.search.FromTerm;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Properties;
 
-import static Dino.Duett.global.ErrorMessage.*;
+import static Dino.Duett.gmail.enums.Message.*;
 
 @Slf4j
 @Component
@@ -42,8 +38,10 @@ public class GmailReader {
         // 통신 3사의 도메인 중 하나가 발신자에 포함되어 있는 메일을 찾음
         while (idx >= 0) {
             Address[] from = messages[idx].getFrom();
+            // 주소에서 도메인을 확인. 대부분 주소는 하나만 있음
             for (Address address : from) {
                 String addressStr = address.toString();
+                // 통신 3사의 도메인이 포함되어 있는 경우 해당 메일을 반환
                 for (String domain : DOMAINS) {
                     if (addressStr.contains(domain)) {
                         return messages[idx];
@@ -83,15 +81,9 @@ public class GmailReader {
                 inbox.open(Folder.READ_ONLY);
 
                 // 발신자 번호를 이용한 검색
-//                for (String domain : DOMAINS) {
-//                }
                 Message[] messages = inbox.search(new FromStringTerm(phoneNumber));
                 // 가장 최근 메일을 가져옴
                 Message lastMessage = getLastMessages(messages);
-                System.out.print("lastMessage: ");
-                System.out.println(Arrays.toString(lastMessage.getAllRecipients()));
-                System.out.print("lastMessage: ");
-                System.out.println(lastMessage.getFrom()[0]);
                 // 메일의 내용을 가져옴
                 String body = getBody(lastMessage);
                 // 메일 내용과 코드가 일치하는지 확인

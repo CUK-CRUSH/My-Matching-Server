@@ -1,7 +1,6 @@
-package Dino.MyMatching.component;
+package Dino.Duett.component;
 
 import Dino.Duett.config.EnvBean;
-import Dino.Duett.global.ErrorMessage;
 import Dino.Duett.gmail.GmailReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,25 +8,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static Dino.Duett.global.ErrorMessage.EMAIL_VALIDATION_FAILED;
-import static Dino.Duett.global.ErrorMessage.NO_MESSAGES_FOUND;
+import static Dino.Duett.gmail.enums.Message.EMAIL_VALIDATION_FAILED;
+import static Dino.Duett.gmail.enums.Message.NO_MESSAGES_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
 @DisplayName("EmailReader 테스트")
 public class GmailReaderTest {
     @InjectMocks
-    GmailReader gmailReader;
+    private GmailReader gmailReader;
     @Mock
     private EnvBean env;
 
