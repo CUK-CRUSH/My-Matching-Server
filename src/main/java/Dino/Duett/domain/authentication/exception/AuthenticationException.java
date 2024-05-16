@@ -3,7 +3,7 @@ package Dino.Duett.domain.authentication.exception;
 import Dino.Duett.global.exception.CustomException;
 import Dino.Duett.global.exception.ErrorCode;
 
-public abstract class AuthenticationException extends CustomException {
+public class AuthenticationException extends CustomException {
         protected AuthenticationException(ErrorCode errorCode) {
             super(errorCode);
         }

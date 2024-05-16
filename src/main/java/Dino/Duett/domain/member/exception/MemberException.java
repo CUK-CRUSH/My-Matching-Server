@@ -3,7 +3,7 @@ package Dino.Duett.domain.member.exception;
 import Dino.Duett.global.exception.CustomException;
 import Dino.Duett.global.exception.ErrorCode;
 
-public abstract class MemberException extends CustomException {
+public class MemberException extends CustomException {
     protected MemberException(ErrorCode errorCode) {
         super(errorCode);
     }
