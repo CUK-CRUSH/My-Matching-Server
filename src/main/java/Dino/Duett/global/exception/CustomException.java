@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -48,17 +49,6 @@ public class CustomException extends RuntimeException {
         return new CustomException(errorCode);
     }
 
-    public static CustomException fromFieldError(final FieldError fieldError) {
-        final String inputValue = (String) fieldError.getRejectedValue();
-        final String errorMessage = fieldError.getDefaultMessage();
-        final String field = fieldError.getField();
-
-        return new CustomException(
-            ErrorCode.REFRESH_TOKEN_NOT_FOUND_EXCEPTION.getCode(),
-            errorMessage,
-            Map.of(field, inputValue)
-        );
-    }
 
     public String getErrorInfoLog() {
         final String codeMessage = String.format(CODE_MESSAGE, code, message);

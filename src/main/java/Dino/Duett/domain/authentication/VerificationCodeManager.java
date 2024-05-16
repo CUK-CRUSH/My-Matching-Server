@@ -1,5 +1,6 @@
 package Dino.Duett.domain.authentication;
 
+import Dino.Duett.domain.authentication.exception.AuthenticationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static Dino.Duett.domain.authentication.enums.Message.INVALID_VERIFICATION_CODE;
+import static Dino.Duett.global.exception.ErrorCode.INVALID_VERIFICATION_CODE;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class VerificationCodeManager {
     public void verifyCode(String phoneNumber, String code) throws ResponseStatusException {
         String storedCode = redisTemplate.opsForValue().get(phoneNumber);
         if (storedCode == null || !storedCode.equals(code)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_VERIFICATION_CODE.getMessage());
+            throw new AuthenticationException.InvalidVerificationCodeException();
         }
     }
 
