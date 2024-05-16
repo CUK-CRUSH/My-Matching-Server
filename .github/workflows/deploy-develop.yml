@@ -2,7 +2,7 @@ name: Deploy Test
 
 on:
   push:
-    branches: ['develop']
+    branches: []
 
 jobs:
   build:
