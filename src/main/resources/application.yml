@@ -11,6 +11,10 @@ spring:
     username: root
     password: 1234
 
+  h2:
+    console:
+      enabled: true
+
   jpa:
     open-in-view: false
     hibernate:

@@ -14,13 +14,13 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleInternalServer(final Exception e) {
-        final CustomException customException = CustomException.from(
-            ErrorCode.INTERNAL_SERVER_ERROR);
-
-        log.error(e.toString());
-
-        return ResponseEntity.internalServerError().body(ErrorResponse.from(customException));
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponse> handleInternalServer(final Exception e) {
+//        final CustomException customException = CustomException.from(
+//            ErrorCode.INTERNAL_SERVER_ERROR);
+//
+//        log.error(e.toString());
+//
+//        return ResponseEntity.internalServerError().body(ErrorResponse.from(customException));
+//    }
 }
