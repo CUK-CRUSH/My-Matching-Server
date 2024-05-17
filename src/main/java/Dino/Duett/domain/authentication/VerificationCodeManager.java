@@ -1,5 +1,6 @@
 package Dino.Duett.domain.authentication;
 
+import Dino.Duett.domain.authentication.dto.VerificationCodeDto;
 import Dino.Duett.domain.authentication.exception.AuthenticationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,11 +24,26 @@ public class VerificationCodeManager {
         return code;
     }
 
+    public VerificationCodeDto requestCodeDto(String phoneNumber) {
+        String code = generateVerificationCode(phoneNumber);
+        return VerificationCodeDto.builder()
+                .code(code)
+                .build();
+    }
+
     public void verifyCode(String phoneNumber, String code) throws ResponseStatusException {
         String storedCode = redisTemplate.opsForValue().get(phoneNumber);
         if (storedCode == null || !storedCode.equals(code)) {
             throw new AuthenticationException.InvalidVerificationCodeException();
         }
+    }
+
+    public String getCode(String phoneNumber) {
+        String storedCode = redisTemplate.opsForValue().get(phoneNumber);
+        if (storedCode == null) {
+            throw new AuthenticationException.NotFoundVerificationCodeException();
+        }
+        return storedCode;
     }
 
     public void deleteCode(String phoneNumber) {

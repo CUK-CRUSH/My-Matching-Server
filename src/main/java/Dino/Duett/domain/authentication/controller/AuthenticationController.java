@@ -1,4 +1,4 @@
-package Dino.Duett.domain.signup.controller;
+package Dino.Duett.domain.authentication.controller;
 
 import Dino.Duett.domain.authentication.VerificationCodeManager;
 import Dino.Duett.domain.authentication.dto.VerificationCodeDto;
@@ -13,16 +13,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "SignUp", description = "회원가입 API")
+@Tag(name = "Authentication", description = "인증 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/sign-up")
-public class SignUpController {
-    private final SignUpService signUpService;
+@RequestMapping("/api/v1/authentication")
+public class AuthenticationController {
+    private final VerificationCodeManager verificationCodeManager;
 
-    @Operation(summary = "회원가입")
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public JsonBody<SignUpRes> signUp(SignUpReq signUpReq) {
-        return JsonBody.of(200, "회원가입 성공", signUpService.signUp(signUpReq));
+    @Operation(summary = "인증 코드 요청")
+    @GetMapping(value = "/code")
+    public JsonBody<VerificationCodeDto> requestCode(@RequestParam @NotBlank String phoneNumber) {
+        return JsonBody.of(200, "인증 코드 요청 성공", verificationCodeManager.requestCodeDto(phoneNumber));
     }
 }

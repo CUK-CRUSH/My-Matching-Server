@@ -34,21 +34,13 @@ public class SignUpService {
         // todo: 프로필 생성
         // profileService.createProfile(signUpReq);
 
-        // redis 인증 코드 삭제
+        // redis 인증 코드 삭제. 회원가입 처리 성공 시 인증 코드 삭제
         verificationCodeManager.deleteCode(signUpReq.getPhoneNumber());
         // todo: gmail 인증 코드 삭제
         // gmailReader.deleteCode(signUpReq.getPhoneNumber());
 
         return SignUpRes.builder()
                 .member(memberDto)
-                .build();
-    }
-
-    // 인증 코드 요청
-    public VerificationCodeDto requestCode(String phoneNumber) {
-        String code = verificationCodeManager.generateVerificationCode(phoneNumber);
-        return VerificationCodeDto.builder()
-                .code(code)
                 .build();
     }
 }
