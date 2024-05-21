@@ -3,7 +3,9 @@ package Dino.Duett.test.service;
 import Dino.Duett.domain.member.dto.MemberDto;
 import Dino.Duett.domain.member.entity.Member;
 import Dino.Duett.domain.member.enums.MemberState;
+import Dino.Duett.domain.member.enums.RoleName;
 import Dino.Duett.domain.member.repository.MemberRepository;
+import Dino.Duett.domain.member.repository.RoleRepository;
 import Dino.Duett.domain.member.service.MemberService;
 import Dino.Duett.domain.signup.dto.SignUpReq;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +29,8 @@ public class MemberServiceTest {
     private MemberService memberService;
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private RoleRepository roleRepository;
 
     @Test
     @DisplayName("member 생성 테스트")
@@ -37,10 +41,16 @@ public class MemberServiceTest {
 
         given(memberRepository.existsByPhoneNumber(phoneNumber)).willReturn(false);
         given(memberRepository.existsByKakaoId(kakaoId)).willReturn(false);
+        given(roleRepository.findByName(any())).willReturn(mock());
         given(memberRepository.save(any(Member.class))).will(invocation -> {
             Member member = invocation.getArgument(0);
-            member.setId(1L);
-            return member;
+            return Member.builder()
+                    .id(1L)
+                    .phoneNumber(member.getPhoneNumber())
+                    .kakaoId(member.getKakaoId())
+                    .coin(0)
+                    .state(MemberState.ACTIVE)
+                    .build();
         });
 
         // when
