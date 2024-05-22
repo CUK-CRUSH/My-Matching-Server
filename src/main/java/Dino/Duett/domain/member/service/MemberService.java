@@ -21,17 +21,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
-    @PostConstruct
-    protected void init() {
-        for (RoleName roleName : RoleName.values()) {
-            if (!roleRepository.existsByName(roleName.name())) {
-                roleRepository.save(Role.builder()
-                        .name(roleName.name()).build()
-                );
-            }
-        }
-    }
-
     // 멤버 엔티티 생성
     @Transactional
     public Member createMember(String phoneNumber, String kakaoId) {

@@ -4,6 +4,9 @@ import Dino.Duett.config.login.jwt.JwtTokenProvider;
 import Dino.Duett.config.login.jwt.JwtTokenType;
 import Dino.Duett.config.security.AuthMember;
 import Dino.Duett.domain.authentication.VerificationCodeManager;
+import Dino.Duett.global.dto.JsonBody;
+import Dino.Duett.global.dto.TokenDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +26,7 @@ import java.util.Map;
 public class SuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
     private final VerificationCodeManager verificationCodeManager;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -35,12 +39,13 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtTokenProvider.createToken(authMember.getId(), JwtTokenType.ACCESS_TOKEN);
         String refreshToken = jwtTokenProvider.createToken(authMember.getId(), JwtTokenType.REFRESH_TOKEN);
 
-        // Map 사용해서 토큰을 JSON 형태로 반환
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshToken);
+        // 토큰 DTO 생성
+        TokenDto tokens = TokenDto.of(accessToken, refreshToken);
 
-        response.getWriter().write(tokens.toString());
+        // 응답 생성
+        JsonBody<TokenDto> jsonBody = JsonBody.of(200, "로그인 성공", tokens);
+        // json 형태의 String 으로 변환하여 응답
+        response.getWriter().write(objectMapper.writeValueAsString(jsonBody));
     }
     // 다음 필터 체이닝 호출 과정을 명시적으로 보이게 하기 위해 추가
     @Override

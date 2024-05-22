@@ -3,6 +3,7 @@ package Dino.Duett.config.login.jwt;
 import Dino.Duett.config.security.AuthMember;
 import Dino.Duett.config.security.AuthMemberService;
 import Dino.Duett.domain.member.entity.Member;
+import Dino.Duett.domain.member.exception.MemberException;
 import Dino.Duett.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -13,9 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.Date;
@@ -34,7 +34,6 @@ public class JwtTokenProvider {
     private long refreshTokenTime;
 
     private final MemberRepository memberRepository;
-    private final AuthMemberService authMemberService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -43,10 +42,10 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(Long memberId, JwtTokenType tokenType) throws IllegalArgumentException {
+    public String createToken(Long memberId, JwtTokenType tokenType) throws MemberException {
         // 멤버 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(MemberException.MemberNotFoundException::new);
         // 토큰 생성
         Claims claims = Jwts.claims().setSubject(member.getId().toString()); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
         claims.put("type", tokenType.getTokenType()); // 토큰 타입 (access token, refresh token)
@@ -58,7 +57,7 @@ public class JwtTokenProvider {
         } else if (tokenType == JwtTokenType.ACCESS_TOKEN) { // access token
             expiration = new Date(now.getTime() + accessTokenTime);
         } else {
-            throw new IllegalArgumentException("토큰 타입이 올바르지 않습니다.");
+            throw new MemberException.InvalidTokenException();
         }
 
         return Jwts.builder()
@@ -68,10 +67,20 @@ public class JwtTokenProvider {
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256) // signature 에 들어갈 secret값 세팅
                 .compact();
     }
-//    // JWT 토큰에서 인증 정보 조회
-    public Authentication getAuthentication(Jws<Claims> claimsJws) throws IllegalArgumentException {
+
+    // JWT 토큰에서 인증 정보 조회
+    public Authentication getAuthentication(Jws<Claims> claimsJws) throws MemberException {
         String memberId = claimsJws.getBody().getSubject();
-        AuthMember authMember = authMemberService.loadUserByMemberId(memberId);
+        Member member = memberRepository.findById(Long.parseLong(memberId))
+                .orElseThrow(MemberException.MemberNotFoundException::new);
+
+        // AuthMember 객체 생성
+        AuthMember authMember = AuthMember.builder()
+                .id(member.getId())
+                .phoneNumber(member.getPhoneNumber())
+                .kakaoId(member.getKakaoId())
+                .role(member.getRole().getName())
+                .build();
 
         return new UsernamePasswordAuthenticationToken(authMember, "", authMember.getAuthorities());
     }

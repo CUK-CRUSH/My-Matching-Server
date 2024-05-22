@@ -26,4 +26,16 @@ public class MemberException extends CustomException {
             super(ErrorCode.ROLE_NOT_FOUND);
         }
     }
+    // Member 찾을 수 없는 예외
+    public static class MemberNotFoundException extends MemberException {
+        public MemberNotFoundException() {
+            super(ErrorCode.MEMBER_NOT_FOUND);
+        }
+    }
+    // 토큰이 유효하지 않은 예외
+    public static class InvalidTokenException extends MemberException {
+        public InvalidTokenException() {
+            super(ErrorCode.INVALID_TOKEN);
+        }
+    }
 }

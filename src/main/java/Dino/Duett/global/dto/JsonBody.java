@@ -8,14 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor(staticName = "of")
 public class JsonBody<T> implements ResponseBody {
     @NotNull
     @Schema(example = "200")
-    private int status;
+    private final int status;
     @NotBlank
     @Schema(example = "성공")
-    private String message;
-    private T data;
+    private final String message;
+    private final T data;
 }

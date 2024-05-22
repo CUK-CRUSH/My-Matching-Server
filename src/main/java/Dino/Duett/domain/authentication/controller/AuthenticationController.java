@@ -22,7 +22,7 @@ public class AuthenticationController {
 
     @Operation(summary = "인증 코드 요청")
     @GetMapping(value = "/code")
-    public JsonBody<VerificationCodeDto> requestCode(@RequestParam @NotBlank String phoneNumber) {
+    public JsonBody<VerificationCodeDto> requestCode(@NotBlank @RequestParam("phoneNumber") String phoneNumber) {
         return JsonBody.of(200, "인증 코드 요청 성공", verificationCodeManager.requestCodeDto(phoneNumber));
     }
 }
