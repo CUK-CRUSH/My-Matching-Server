@@ -2,6 +2,7 @@ package Dino.Duett.domain.authentication;
 
 import Dino.Duett.domain.authentication.dto.VerificationCodeDto;
 import Dino.Duett.domain.authentication.exception.AuthenticationException;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;

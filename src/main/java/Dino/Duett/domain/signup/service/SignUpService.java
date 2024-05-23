@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SignUpService {
     private final VerificationCodeManager verificationCodeManager;
