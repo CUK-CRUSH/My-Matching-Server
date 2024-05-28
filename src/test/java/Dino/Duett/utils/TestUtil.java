@@ -27,11 +27,11 @@ public class TestUtil {
         signUpReq.setCode("code");
         signUpReq.setNickname(MEMBER_NICKNAME);
         signUpReq.setKakaoId(MEMBER_KAKAO_ID);
-        signUpReq.setBirth("1997-10-31");
-        signUpReq.setComment("comment");
-        signUpReq.setLocation(new int[]{1, 1});
         signUpReq.setSex("male");
+        signUpReq.setBirth("1997-10-31");
+        signUpReq.setLocation(new int[]{1, 1});
         signUpReq.setProfileImage(multipartFile);
+        signUpReq.setComment("comment");
 
         return signUpReq;
     }

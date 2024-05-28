@@ -53,6 +53,7 @@ public class SignUpControllerTest {
         doAnswer(invocation -> null).when(gmailReader).validate(anyString(), anyString());
 
         SignUpReq signUpReq = TestUtil.makeSignUpReq();
+        signUpReq.setCode(verificationCode);
 
         // MockMultipartFile 객체를 생성하여 파일을 만듭니다.
         MockMultipartFile profileImage = new MockMultipartFile(
@@ -62,28 +63,19 @@ public class SignUpControllerTest {
                 "Profile Image Content".getBytes()
         );
 
-        // 다른 필드들은 문자열로 설정합니다.
-//        MockMultipartFile phoneNumber = new MockMultipartFile("phoneNumber", "", "text/plain", signUpReq.getPhoneNumber().getBytes());
-//        MockMultipartFile code = new MockMultipartFile("code", "", "text/plain", verificationCode.getBytes());
-//        MockMultipartFile nickname = new MockMultipartFile("nickname", "", "text/plain", signUpReq.getNickname().getBytes());
-//        MockMultipartFile kakaoId = new MockMultipartFile("kakaoId", "", "text/plain", signUpReq.getKakaoId().getBytes());
-//        MockMultipartFile sex = new MockMultipartFile("sex", "", "text/plain", signUpReq.getSex().getBytes());
-//        MockMultipartFile birth = new MockMultipartFile("birth", "", "text/plain", signUpReq.getBirth().getBytes());
-//        MockMultipartFile location = new MockMultipartFile("location", "", "application/json", objectMapper.writeValueAsBytes(signUpReq.getLocation()));
-//        MockMultipartFile comment = new MockMultipartFile("comment", "", "text/plain", signUpReq.getComment().getBytes());
-
         // when, then
         testReporter.publishEntry(mockMvc.perform(
                     multipart("/api/v1/sign-up")
                             .file(profileImage)
-//                            .param("phoneNumber", signUpReq.getPhoneNumber())
-//                            .param("code", verificationCode)
-//                            .param("nickname", signUpReq.getNickname())
-//                            .param("kakaoId", signUpReq.getKakaoId())
-//                            .param("sex", signUpReq.getSex())
-//                            .param("birth", signUpReq.getBirth())
-//                            .param("location", Arrays.toString(signUpReq.getLocation()))
-//                            .param("comment", signUpReq.getComment()))
+                            .param("phoneNumber", signUpReq.getPhoneNumber())
+                            .param("code", verificationCode)
+                            .param("nickname", signUpReq.getNickname())
+                            .param("kakaoId", signUpReq.getKakaoId())
+                            .param("sex", signUpReq.getSex())
+                            .param("birth", signUpReq.getBirth())
+                            .param("location", signUpReq.getLocation()[0] + "," + signUpReq.getLocation()[1])
+                            .param("comment", signUpReq.getComment())
+                            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 )
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString());

@@ -22,7 +22,7 @@ public class SignUpReq {
     private String sex;
     @NotBlank
     private String birth;
-    @NotNull
+//    @NotNull
     private int[] location;
     @NotNull
     private MultipartFile profileImage;
