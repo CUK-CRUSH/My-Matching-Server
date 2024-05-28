@@ -3,7 +3,6 @@ package Dino.Duett.global.exception;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -17,7 +16,8 @@ public enum ErrorCode {
 
     // 1000: Authentication
     INVALID_VERIFICATION_CODE(1000, "인증 코드가 유효하지 않습니다"),
-    NOT_FOUND_VERIFICATION_CODE(1001, "인증 코드를 찾을 수 없습니다"),
+    VERIFICATION_CODE_NOT_FOUND(1001, "인증 코드를 찾을 수 없습니다"),
+    LOGIN_FAILED(1002, "로그인 실패"),
 
     // 2000: Member
     DUPLICATE_PHONE_NUMBER(2000, "전화번호가 중복됩니다"),
@@ -29,7 +29,7 @@ public enum ErrorCode {
     // 3000: Gmail
     INVALID_CONTENT_TYPE(3000, "올바르지 않은 메일 형식"),
     EMAIL_VALIDATION_FAILED(3001, "이메일 유효성 검사 실패"),
-    NO_MESSAGES_FOUND(3002, "메일을 찾을 수 없습니다"),
+    MESSAGE_NOT_FOUND(3002, "메일을 찾을 수 없습니다"),
     ;
 
     private final int code;

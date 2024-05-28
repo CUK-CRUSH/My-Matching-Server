@@ -14,9 +14,9 @@ public class AuthenticationException extends CustomException {
         }
     }
 
-    public static class NotFoundVerificationCodeException extends AuthenticationException {
-        public NotFoundVerificationCodeException() {
-            super(ErrorCode.NOT_FOUND_VERIFICATION_CODE);
+    public static class VerificationCodeNotFoundException extends AuthenticationException {
+        public VerificationCodeNotFoundException() {
+            super(ErrorCode.VERIFICATION_CODE_NOT_FOUND);
         }
     }
 

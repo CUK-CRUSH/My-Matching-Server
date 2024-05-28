@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -54,7 +53,7 @@ public class GmailReaderTest {
 
         // then
         assertThat(throwable).isInstanceOf(CustomException.class);
-        assertThat(throwable.getMessage()).isEqualTo(new GmailException.NoMessagesFoundException().getMessage());
+        assertThat(throwable.getMessage()).isEqualTo(new GmailException.MessageNotFoundException().getMessage());
     }
 
     @Test

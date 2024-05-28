@@ -6,7 +6,6 @@ import jakarta.mail.*;
 import jakarta.mail.search.FromStringTerm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -30,7 +29,7 @@ public class GmailReader {
 
     private Message getLastMessages(Message[] messages) throws GmailException, MessagingException {
         if (messages == null || messages.length == 0) {
-            throw new GmailException.NoMessagesFoundException();
+            throw new GmailException.MessageNotFoundException();
         }
 
         // 통신 3사의 도메인 중 하나가 발신자에 포함되어 있는 메일을 찾음
@@ -47,7 +46,7 @@ public class GmailReader {
                 }
             }
         }
-        throw new GmailException.NoMessagesFoundException();
+        throw new GmailException.MessageNotFoundException();
     }
 
     private String getBody(Message message) throws IOException, MessagingException {

@@ -20,9 +20,9 @@ public class GmailException extends CustomException {
         }
     }
 
-    public static class NoMessagesFoundException extends GmailException {
-        public NoMessagesFoundException() {
-            super(ErrorCode.NO_MESSAGES_FOUND);
+    public static class MessageNotFoundException extends GmailException {
+        public MessageNotFoundException() {
+            super(ErrorCode.MESSAGE_NOT_FOUND);
         }
     }
 }

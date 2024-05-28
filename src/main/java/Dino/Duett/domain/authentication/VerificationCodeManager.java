@@ -2,17 +2,12 @@ package Dino.Duett.domain.authentication;
 
 import Dino.Duett.domain.authentication.dto.VerificationCodeDto;
 import Dino.Duett.domain.authentication.exception.AuthenticationException;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import static Dino.Duett.global.exception.ErrorCode.INVALID_VERIFICATION_CODE;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +37,7 @@ public class VerificationCodeManager {
     public String getCode(String phoneNumber) {
         String storedCode = redisTemplate.opsForValue().get(phoneNumber);
         if (storedCode == null) {
-            throw new AuthenticationException.NotFoundVerificationCodeException();
+            throw new AuthenticationException.VerificationCodeNotFoundException();
         }
         return storedCode;
     }
