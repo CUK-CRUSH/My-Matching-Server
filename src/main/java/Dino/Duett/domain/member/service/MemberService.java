@@ -23,7 +23,7 @@ public class MemberService {
 
     // 멤버 엔티티 생성
     @Transactional
-    public Member createMember(String phoneNumber, String kakaoId) {
+    public Member createMember(String phoneNumber, String kakaoId) throws MemberException {
         // 중복 체크
         if (memberRepository.existsByPhoneNumber(phoneNumber)) {
             throw new MemberException.DuplicatePhoneNumberException();

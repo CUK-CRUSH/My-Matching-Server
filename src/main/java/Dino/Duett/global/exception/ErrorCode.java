@@ -25,6 +25,11 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(2002, "역할을 찾을 수 없습니다"),
     MEMBER_NOT_FOUND(2003, "사용자를 찾을 수 없습니다"),
     INVALID_TOKEN(2004, "토큰이 유효하지 않습니다"),
+
+    // 3000: Gmail
+    INVALID_CONTENT_TYPE(3000, "올바르지 않은 메일 형식"),
+    EMAIL_VALIDATION_FAILED(3001, "이메일 유효성 검사 실패"),
+    NO_MESSAGES_FOUND(3002, "메일을 찾을 수 없습니다"),
     ;
 
     private final int code;

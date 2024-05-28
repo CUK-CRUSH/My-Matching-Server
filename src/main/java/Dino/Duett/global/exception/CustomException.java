@@ -20,6 +20,7 @@ public class CustomException extends RuntimeException {
     private static final String CODE_MESSAGE = " Code: %d, Message: %s ";
     private static final String PROPERTY_VALUE = "Property: %s, Value: %s ";
     private static final String VALUE_DELIMITER = "/";
+    private static final String RESPONSE_MESSAGE = "%d %s";
 
     private final int code;
     private final String message;
@@ -62,5 +63,9 @@ public class CustomException extends RuntimeException {
             .stream()
             .map(entry -> String.format(PROPERTY_VALUE, entry.getKey(), entry.getValue()))
             .collect(Collectors.joining(VALUE_DELIMITER));
+    }
+
+    public String getErrorResponse() {
+        return String.format(RESPONSE_MESSAGE, code, message);
     }
 }

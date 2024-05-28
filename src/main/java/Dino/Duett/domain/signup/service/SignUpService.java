@@ -8,7 +8,9 @@ import Dino.Duett.domain.member.repository.MemberRepository;
 import Dino.Duett.domain.member.service.MemberService;
 import Dino.Duett.domain.signup.dto.SignUpReq;
 import Dino.Duett.domain.signup.dto.SignUpRes;
+import Dino.Duett.global.exception.CustomException;
 import Dino.Duett.gmail.GmailReader;
+import Dino.Duett.gmail.exception.GmailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class SignUpService {
     private final MemberService memberService;
 
     // 회원가입
-    public SignUpRes signUp(SignUpReq signUpReq) throws ResponseStatusException {
+    public SignUpRes signUp(SignUpReq signUpReq) throws CustomException {
         // redis, gmail 인증 코드 확인
         verificationCodeManager.verifyCode(signUpReq.getPhoneNumber(), signUpReq.getCode());
         gmailReader.validate(signUpReq.getPhoneNumber(), signUpReq.getCode());

@@ -32,7 +32,7 @@ public class VerificationCodeManager {
                 .build();
     }
 
-    public void verifyCode(String phoneNumber, String code) throws ResponseStatusException {
+    public void verifyCode(String phoneNumber, String code) throws AuthenticationException {
         String storedCode = redisTemplate.opsForValue().get(phoneNumber);
         if (storedCode == null || !storedCode.equals(code)) {
             throw new AuthenticationException.InvalidVerificationCodeException();
