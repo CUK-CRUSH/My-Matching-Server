@@ -29,7 +29,7 @@ public class TestUtil {
         signUpReq.setKakaoId(MEMBER_KAKAO_ID);
         signUpReq.setSex("male");
         signUpReq.setBirth("1997-10-31");
-        signUpReq.setLocation(new int[]{1, 1});
+        signUpReq.setLocation(new double[]{1.1, 2.2});
         signUpReq.setProfileImage(multipartFile);
         signUpReq.setComment("comment");
 
