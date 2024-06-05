@@ -6,7 +6,6 @@ import Dino.Duett.domain.member.entity.Member;
 import Dino.Duett.domain.member.service.MemberService;
 import Dino.Duett.global.exception.ErrorCode;
 import Dino.Duett.gmail.GmailReader;
-import Dino.Duett.gmail.exception.GmailException;
 import Dino.Duett.utils.TestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
