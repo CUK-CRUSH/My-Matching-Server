@@ -10,11 +10,9 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -88,7 +86,10 @@ public class ImageService {
                 .build();
     }
 
-    // ImageDto말고 Image가 필요한 경우
+    /**
+     * 이미지 저장
+     * GCS에 이미지를 저장하고 DB에 이미지 엔티티를 저장합니다.
+     * */
     public Image saveImage(MultipartFile imageFile) throws ImageException {
         // 확장자를 webp로 고정
         String ext = "image/webp";
@@ -118,6 +119,10 @@ public class ImageService {
         }
     }
 
+    /**
+     * 이미지 삭제
+     * GCS 이미지 삭제 후 DB에서 이미지 엔티티를 삭제합니다.
+     * */
     public void deleteImage(Long id) throws ImageException {
         Image image = imageRepository.findById(id)
                 .orElseThrow(ImageException.ImageNotFoundException::new); // Image 찾을 수 없음
