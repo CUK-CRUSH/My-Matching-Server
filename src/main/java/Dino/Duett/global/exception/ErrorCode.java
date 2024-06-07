@@ -30,6 +30,13 @@ public enum ErrorCode {
     INVALID_CONTENT_TYPE(3000, "올바르지 않은 메일 형식"),
     EMAIL_VALIDATION_FAILED(3001, "이메일 유효성 검사 실패"),
     MESSAGE_NOT_FOUND(3002, "메일을 찾을 수 없습니다"),
+
+    // 4000: Image
+    IMAGE_NOT_FOUND(4000, "이미지를 찾을 수 없습니다"),
+    IMAGE_SAVE_FAILED(4001, "이미지 저장 실패"),
+    IMAGE_CONVERT_FAILED(4002, "이미지 변환 실패"),
+    MULTIPART_FILE_CONVERT_FAILED(4003, "MultipartFile 변환 실패"),
+    IMAGE_DELETE_FAILED(4004, "이미지 삭제 실패"),
     ;
 
     private final int code;

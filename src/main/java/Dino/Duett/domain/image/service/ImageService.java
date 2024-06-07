@@ -3,6 +3,7 @@ package Dino.Duett.domain.image.service;
 import Dino.Duett.config.EnvBean;
 import Dino.Duett.domain.image.dto.ImageDto;
 import Dino.Duett.domain.image.entity.Image;
+import Dino.Duett.domain.image.exception.ImageException;
 import Dino.Duett.domain.image.repository.ImageRepository;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
@@ -39,11 +40,11 @@ public class ImageService {
         return String.format("https://storage.googleapis.com/%s/%s", envBean.getBucketName(), image.getName());
     }
 
-    public byte[] convertToWebP(MultipartFile file) throws IOException {
+    private byte[] convertToWebP(MultipartFile file) throws IOException, ImageException {
         // MultipartFile을 BufferedImage로 변환
         BufferedImage image = ImageIO.read(file.getInputStream());
         if (image == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미지 변환에 실패했습니다. 잘못된 이미지 파일입니다.");
+            throw new ImageException.MultipartFileConvertFailedException(); // MultipartFile 변환 실패
         }
 
         // 비표준 색공간 이미지를 표준 RGB로 변환
@@ -67,7 +68,7 @@ public class ImageService {
             writer.write(null, new IIOImage(convertedImage, null, null), writeParam);
         } catch (IOException e) {
             log.error("ImageService.convertToWebP: {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new ImageException.ImageConvertFailedException(); // Image 변환 실패
         } finally {
             writer.dispose();
         }
@@ -76,11 +77,10 @@ public class ImageService {
     }
 
 
-    public ImageDto saveImageToGcs(MultipartFile imageFile) throws RuntimeException {
-        Image image = saveImageToGcs_Image(imageFile);
+    public ImageDto saveImageToDto(MultipartFile imageFile) throws ImageException {
+        Image image = saveImage(imageFile);
         return ImageDto.builder()
                 .id(image.getId())
-                .originalName(image.getOriginalName())
                 .name(image.getName())
                 .extension(image.getExtension())
                 .uuid(image.getUuid())
@@ -89,8 +89,7 @@ public class ImageService {
     }
 
     // ImageDto말고 Image가 필요한 경우
-    public Image saveImageToGcs_Image(MultipartFile imageFile) throws RuntimeException {
-        String originalName = imageFile.getOriginalFilename();
+    public Image saveImage(MultipartFile imageFile) throws ImageException {
         // 확장자를 webp로 고정
         String ext = "image/webp";
         String uuid = UUID.randomUUID().toString();
@@ -102,11 +101,11 @@ public class ImageService {
                 .build();
 
         try {
-            Blob blob = storage.create(imageInfo, convertToWebP(imageFile));
+            byte[] webp = convertToWebP(imageFile);
+            Blob blob = storage.create(imageInfo, webp);
             String fileName = blob.getName();
 
             Image image = Image.builder()
-                    .originalName(originalName)
                     .name(fileName)
                     .extension(ext)
                     .uuid(uuid)
@@ -115,17 +114,15 @@ public class ImageService {
             return imageRepository.save(image);
         } catch (IOException e) {
             log.error("ImageService.saveImageToGcs: {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new ImageException.ImageSaveFailedException(); // Image 저장 실패
         }
     }
 
-    private void deleteImage(Image image) throws RuntimeException {
+    public void deleteImage(Long id) throws ImageException {
+        Image image = imageRepository.findById(id)
+                .orElseThrow(ImageException.ImageNotFoundException::new); // Image 찾을 수 없음
         String fileName = image.getName();
         Blob blob = storage.get(envBean.getBucketName(), fileName);
-        if (blob == null) {
-            log.error("ImageService.deleteObject: The object {} wasn't found in {}", fileName, envBean.getBucketName());
-            return;
-        }
         try {
             Storage.BlobSourceOption precondition =
                     Storage.BlobSourceOption.generationMatch(blob.getGeneration());
@@ -135,17 +132,7 @@ public class ImageService {
             imageRepository.deleteByName(fileName);
         } catch (Exception e) {
             log.error("ImageService.deleteImageToGcs: {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new ImageException.ImageDeleteFailedException(); // Image 삭제 실패
         }
-    }
-
-    public void deleteImageToGcs(Long id) throws RuntimeException {
-        Image image = imageRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 이미지가 존재하지 않습니다."));
-        deleteImage(image);
-    }
-    // id말고 Image를 인자로 받는 경우
-    public void deleteImageToGcs(Image image) throws RuntimeException {
-        deleteImage(image);
     }
 }

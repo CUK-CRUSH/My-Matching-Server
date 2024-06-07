@@ -9,6 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * make-: 테스트용 객체 생성
+ * create-: 테스트용 엔티티 생성
+ * */
 @Component
 public class TestUtil {
     public static final String MEMBER_PHONE_NUMBER = "01012345678";
@@ -34,6 +45,20 @@ public class TestUtil {
         signUpReq.setComment("comment");
 
         return signUpReq;
+    }
+
+    public static InputStream makeImageFile() throws IOException {
+        // 1x1 pixel image 생성
+        BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+        bufferedImage.setRGB(0, 0, 0xFFFFFF); // Set the color to white
+
+        // byte array 생성
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+
+        // byte array -> InputStream 변환
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        return new ByteArrayInputStream(imageBytes);
     }
 
     /**

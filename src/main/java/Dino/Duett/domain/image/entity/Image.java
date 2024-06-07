@@ -16,9 +16,6 @@ public class Image extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "original_name", nullable = false)
-    String originalName;
-
     @Column(name = "name", nullable = false)
     String name;
 
@@ -29,9 +26,8 @@ public class Image extends BaseEntity {
     String uuid;
 
     @Builder
-    public Image(Long id, String originalName, String name, String extension, String uuid) {
+    public Image(Long id, String name, String extension, String uuid) {
         this.id = id;
-        this.originalName = originalName;
         this.name = name;
         this.extension = extension;
         this.uuid = uuid;
