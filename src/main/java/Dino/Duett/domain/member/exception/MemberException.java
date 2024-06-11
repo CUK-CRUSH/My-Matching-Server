@@ -42,10 +42,10 @@ public class MemberException extends CustomException {
             super(ErrorCode.INVALID_TOKEN);
         }
 
-        public static class MemberCoinNotEnoughException extends MemberException {
-            public MemberCoinNotEnoughException() {
-                super(ErrorCode.MEMBER_COIN_NOT_ENOUGH);
-            }
+    }
+    public static class MemberCoinNotEnoughException extends MemberException {
+        public MemberCoinNotEnoughException() {
+            super(ErrorCode.MEMBER_COIN_NOT_ENOUGH);
         }
     }
 }
