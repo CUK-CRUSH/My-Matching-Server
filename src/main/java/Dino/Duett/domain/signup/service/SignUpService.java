@@ -8,7 +8,9 @@ import Dino.Duett.domain.member.repository.MemberRepository;
 import Dino.Duett.domain.member.service.MemberService;
 import Dino.Duett.domain.signup.dto.SignUpReq;
 import Dino.Duett.domain.signup.dto.SignUpRes;
+import Dino.Duett.global.exception.CustomException;
 import Dino.Duett.gmail.GmailReader;
+import Dino.Duett.gmail.exception.GmailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SignUpService {
     private final VerificationCodeManager verificationCodeManager;
@@ -24,7 +27,7 @@ public class SignUpService {
     private final MemberService memberService;
 
     // 회원가입
-    public SignUpRes signUp(SignUpReq signUpReq) throws ResponseStatusException {
+    public SignUpRes signUp(SignUpReq signUpReq) throws CustomException {
         // redis, gmail 인증 코드 확인
         verificationCodeManager.verifyCode(signUpReq.getPhoneNumber(), signUpReq.getCode());
         gmailReader.validate(signUpReq.getPhoneNumber(), signUpReq.getCode());
@@ -34,21 +37,13 @@ public class SignUpService {
         // todo: 프로필 생성
         // profileService.createProfile(signUpReq);
 
-        // redis 인증 코드 삭제
+        // redis 인증 코드 삭제. 회원가입 처리 성공 시 인증 코드 삭제
         verificationCodeManager.deleteCode(signUpReq.getPhoneNumber());
         // todo: gmail 인증 코드 삭제
         // gmailReader.deleteCode(signUpReq.getPhoneNumber());
 
         return SignUpRes.builder()
                 .member(memberDto)
-                .build();
-    }
-
-    // 인증 코드 요청
-    public VerificationCodeDto requestCode(String phoneNumber) {
-        String code = verificationCodeManager.generateVerificationCode(phoneNumber);
-        return VerificationCodeDto.builder()
-                .code(code)
                 .build();
     }
 }

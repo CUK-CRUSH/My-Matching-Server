@@ -1,7 +1,9 @@
 package Dino.Duett.test.component;
 
 import Dino.Duett.config.EnvBean;
+import Dino.Duett.global.exception.CustomException;
 import Dino.Duett.gmail.GmailReader;
+import Dino.Duett.gmail.exception.GmailException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,16 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-import static Dino.Duett.gmail.enums.Message.EMAIL_VALIDATION_FAILED;
-import static Dino.Duett.gmail.enums.Message.NO_MESSAGES_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.BDDMockito.given;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
+//@Disabled // 테스트 속도가 너무 느려서 일시적으로 비활성화
 @DisplayName("EmailReader 테스트")
 public class GmailReaderTest {
     @InjectMocks
@@ -52,8 +52,8 @@ public class GmailReaderTest {
         Throwable throwable = catchThrowable(() -> gmailReader.validate(phoneNumber, code));
 
         // then
-        assertThat(throwable).isInstanceOf(ResponseStatusException.class);
-        assertThat(((ResponseStatusException) throwable).getMessage()).isEqualTo("400 BAD_REQUEST \"" + NO_MESSAGES_FOUND.getMessage() +"\"");
+        assertThat(throwable).isInstanceOf(CustomException.class);
+        assertThat(throwable.getMessage()).isEqualTo(new GmailException.MessageNotFoundException().getMessage());
     }
 
     @Test
@@ -69,8 +69,8 @@ public class GmailReaderTest {
         Throwable throwable = catchThrowable(() -> gmailReader.validate(phoneNumber, code));
 
         // then
-        assertThat(throwable).isInstanceOf(ResponseStatusException.class);
-        assertThat(((ResponseStatusException) throwable).getMessage()).isEqualTo("401 UNAUTHORIZED \"" + EMAIL_VALIDATION_FAILED.getMessage() +"\"");
+        assertThat(throwable).isInstanceOf(CustomException.class);
+        assertThat(throwable.getMessage()).isEqualTo(new GmailException.EmailValidationFailedException().getMessage());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class GmailReaderTest {
         Throwable throwable = catchThrowable(() -> gmailReader.validate(phoneNumber, code));
 
         // then
-        assertThat(throwable).isInstanceOf(ResponseStatusException.class);
-        assertThat(((ResponseStatusException) throwable).getMessage()).isEqualTo("400 BAD_REQUEST \"" + EMAIL_VALIDATION_FAILED.getMessage() +"\"");
+        assertThat(throwable).isInstanceOf(CustomException.class);
+        assertThat(throwable.getMessage()).isEqualTo(new GmailException.EmailValidationFailedException().getMessage());
     }
 }

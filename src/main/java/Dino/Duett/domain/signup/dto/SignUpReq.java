@@ -23,7 +23,7 @@ public class SignUpReq {
     @NotBlank
     private String birth;
     @NotNull
-    private int[] location;
+    private double[] location;
     @NotNull
     private MultipartFile profileImage;
     @NotBlank

@@ -1,17 +1,14 @@
 package Dino.Duett.gmail;
 
 import Dino.Duett.config.EnvBean;
+import Dino.Duett.gmail.exception.GmailException;
 import jakarta.mail.*;
 import jakarta.mail.search.FromStringTerm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Properties;
-
-import static Dino.Duett.gmail.enums.Message.*;
 
 @Slf4j
 @Component
@@ -30,34 +27,33 @@ public class GmailReader {
         SESSION = Session.getInstance(properties);
     }
 
-    private Message getLastMessages(Message[] messages) throws ResponseStatusException, MessagingException {
+    private Message getLastMessages(Message[] messages) throws GmailException, MessagingException {
         if (messages == null || messages.length == 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NO_MESSAGES_FOUND.getMessage());
+            throw new GmailException.MessageNotFoundException();
         }
-        int idx = messages.length - 1;
+
         // 통신 3사의 도메인 중 하나가 발신자에 포함되어 있는 메일을 찾음
-        while (idx >= 0) {
-            Address[] from = messages[idx].getFrom();
+        for (Message message : messages) {
+            Address[] from = message.getFrom();
             // 주소에서 도메인을 확인. 대부분 주소는 하나만 있음
             for (Address address : from) {
                 String addressStr = address.toString();
                 // 통신 3사의 도메인이 포함되어 있는 경우 해당 메일을 반환
                 for (String domain : DOMAINS) {
                     if (addressStr.contains(domain)) {
-                        return messages[idx];
+                        return message;
                     }
                 }
             }
-            idx--;
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NO_MESSAGES_FOUND.getMessage());
+        throw new GmailException.MessageNotFoundException();
     }
 
     private String getBody(Message message) throws IOException, MessagingException {
         Object content = message.getContent();
         // 메일의 내용이 multipart 아닌 경우 예외
         if (!(content instanceof Multipart multipart)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_CONTENT_TYPE.getMessage());
+            throw new GmailException.InvalidContentTypeException();
         }
         BodyPart bodyPart = multipart.getBodyPart(0);
         String body = bodyPart.getContent().toString();
@@ -69,11 +65,12 @@ public class GmailReader {
         return body;
     }
 
-    public void validate(String phoneNumber, String code) throws ResponseStatusException {
+    public void validate(String phoneNumber, String code) throws GmailException {
         // 전화번호가 숫자로만 이루어져 있는지 확인
         if (phoneNumber.matches(".*[^0-9].*")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, EMAIL_VALIDATION_FAILED.getMessage());
+            throw new GmailException.EmailValidationFailedException();
         }
+
         try (Store store = SESSION.getStore()) {
             store.connect(envBean.getEmailUsername(), envBean.getEmailPassword());
 
@@ -88,15 +85,15 @@ public class GmailReader {
                 String body = getBody(lastMessage);
                 // 메일 내용과 코드가 일치하는지 확인
                 if (!body.equals(code)) {
-                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, EMAIL_VALIDATION_FAILED.getMessage());
+                    throw new GmailException.EmailValidationFailedException();
                 }
             }
-        } catch (ResponseStatusException e) {
+        } catch (GmailException e) {
             throw e;
         } catch (Exception e) {
             log.error("Failed to read email");
             e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, EMAIL_VALIDATION_FAILED.getMessage());
+            throw new GmailException.EmailValidationFailedException();
         }
     }
 }

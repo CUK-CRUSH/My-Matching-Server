@@ -13,4 +13,5 @@ public class MemberDto {
     private String kakaoId;
     private Integer coin;
     private String state;
+    private String role;
 }

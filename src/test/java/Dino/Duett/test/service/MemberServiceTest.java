@@ -2,10 +2,14 @@ package Dino.Duett.test.service;
 
 import Dino.Duett.domain.member.dto.MemberDto;
 import Dino.Duett.domain.member.entity.Member;
+import Dino.Duett.domain.member.entity.Role;
 import Dino.Duett.domain.member.enums.MemberState;
+import Dino.Duett.domain.member.enums.RoleName;
 import Dino.Duett.domain.member.repository.MemberRepository;
+import Dino.Duett.domain.member.repository.RoleRepository;
 import Dino.Duett.domain.member.service.MemberService;
 import Dino.Duett.domain.signup.dto.SignUpReq;
+import Dino.Duett.utils.TestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,42 +31,43 @@ public class MemberServiceTest {
     private MemberService memberService;
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private RoleRepository roleRepository;
 
     @Test
     @DisplayName("member 생성 테스트")
     public void createMemberTest() {
         // given
-        String phoneNumber = "01012345678";
-        String kakaoId = "kakaoId";
+        Member inputMember = TestUtil.createMember();
 
-        given(memberRepository.existsByPhoneNumber(phoneNumber)).willReturn(false);
-        given(memberRepository.existsByKakaoId(kakaoId)).willReturn(false);
+        given(memberRepository.existsByPhoneNumber(inputMember.getPhoneNumber())).willReturn(false);
+        given(memberRepository.existsByKakaoId(inputMember.getKakaoId())).willReturn(false);
+        given(roleRepository.findByName(any())).willReturn(mock());
         given(memberRepository.save(any(Member.class))).will(invocation -> {
-            Member member = invocation.getArgument(0);
-            member.setId(1L);
-            return member;
+            Member argMember = invocation.getArgument(0);
+            return Member.builder()
+                    .id(1L)
+                    .phoneNumber(argMember.getPhoneNumber())
+                    .kakaoId(argMember.getKakaoId())
+                    .coin(0)
+                    .state(MemberState.ACTIVE)
+                    .build();
         });
 
         // when
-        Member member = memberService.createMember(phoneNumber, kakaoId);
+        Member retMember = memberService.createMember(inputMember.getPhoneNumber(), inputMember.getKakaoId());
 
         // then
-        assertThat(member.getId()).isEqualTo(1L);
-        assertThat(member.getPhoneNumber()).isEqualTo(phoneNumber);
-        assertThat(member.getKakaoId()).isEqualTo(kakaoId);
+        assertThat(retMember.getId()).isEqualTo(1L);
+        assertThat(retMember.getPhoneNumber()).isEqualTo(inputMember.getPhoneNumber());
+        assertThat(retMember.getKakaoId()).isEqualTo(inputMember.getKakaoId());
     }
 
     @Test
     @DisplayName("member dto 생성 테스트")
     public void makeMemberDtoTest() {
         // given
-        Member member = Member.builder()
-                .id(1L)
-                .phoneNumber("01012345678")
-                .kakaoId("kakaoId")
-                .coin(0)
-                .state(MemberState.ACTIVE)
-                .build();
+        Member member = TestUtil.createMember();
 
         // when
         MemberDto memberDto = memberService.makeMemberDto(member);

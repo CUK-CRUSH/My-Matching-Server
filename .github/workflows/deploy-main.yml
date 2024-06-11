@@ -2,7 +2,7 @@ name: Deploy to GCP Instance using SSH
 
 on:
   push:
-    branches: [ 'tmp' ]
+    branches: [ 'main' ]
 
 jobs:
   build:
@@ -30,6 +30,8 @@ jobs:
           spring.datasource.url: ${{ secrets.DATASOURCE_URL }}
           spring.jpa.hibernate.ddl-auto: ${{ secrets.JPA_DDL_AUTO }}
 
+          spring.data.redis.database: ${{ secrets.REDIS_DATABASE }}
+
           server.port: ${{ secrets.SERVER_PORT }}
           server.ssl.key-store-password: ${{ secrets.KEYSTORE_PASSWORD }}
 
@@ -37,7 +39,7 @@ jobs:
 
           spring.cloud.gcp.storage.credentials.location: ${{ secrets.GCS_KEY_LOCATION }}
           spring.cloud.gcp.storage.project-id: ${{ secrets.GCS_PROJECT_ID }}
-          spring.cloud.gcp.storage.bucket: ${{ secrets.GCS_BUCKET_NAME }}
+          spring.cloud.gcp.storage.bucket-name: ${{ secrets.GCS_BUCKET_NAME }}
           spring.cloud.gcp.storage.bucket-dir: ${{ secrets.GCS_BUCKET_DIR }}
           spring.cloud.gcp.storage.key-name: ${{ secrets.GCS_KEY_NAME }}
 
