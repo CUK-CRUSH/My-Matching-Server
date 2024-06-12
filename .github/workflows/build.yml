@@ -31,6 +31,8 @@ jobs:
         env:
           spring.datasource.driver-class-name: ${{ secrets.BUILD_DATASOURCE_DRIVER_CLASS_NAME }}
           spring.datasource.url: ${{ secrets.BUILD_DATASOURCE_URL }}
+          spring.datasource.username: root
+          spring.datasource.password: 1234
           spring.jpa.hibernate.ddl-auto: ${{ secrets.BUILD_JPA_DDL_AUTO }}
 
           spring.data.redis.database: ${{ secrets.BUILD_REDIS_DATABASE }}
