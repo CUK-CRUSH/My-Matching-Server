@@ -33,6 +33,8 @@ jobs:
         spring.datasource.url: ${{ secrets.BUILD_DATASOURCE_URL }}
         spring.jpa.hibernate.ddl-auto: ${{ secrets.BUILD_JPA_DDL_AUTO }}
 
+        spring.data.redis.database: ${{ secrets.BUILD_REDIS_DATABASE }}
+
         server.port: ${{ secrets.SERVER_PORT }}
         server.ssl.key-store-password: ${{ secrets.KEYSTORE_PASSWORD }}
 

@@ -70,11 +70,6 @@ public class SecurityConfig {
                     .successHandler(successHandler) // 로그인 성공 핸들러
                     .failureHandler(failureHandler) // 로그인 실패 핸들러
                     .permitAll()) // 로그인 페이지는 모든 사용자 허용
-            .logout(logout -> logout
-                    .logoutUrl("/logout") // 로그아웃 url
-                    .deleteCookies("JSESSIONID") // 쿠키 삭제
-//                    .logoutSuccessUrl("/login") // 로그아웃 성공시 이동할 페이지
-                    .permitAll()) // 로그아웃 페이지는 모든 사용자 허용
 
             // 허용 경로 설정
             .authorizeHttpRequests(authorize -> authorize
