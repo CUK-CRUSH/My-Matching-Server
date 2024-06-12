@@ -4,6 +4,7 @@ import Dino.Duett.config.EnvBean;
 import Dino.Duett.global.exception.CustomException;
 import Dino.Duett.gmail.GmailReader;
 import Dino.Duett.gmail.exception.GmailException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,7 @@ import static org.mockito.BDDMockito.given;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
-//@Disabled // 테스트 속도가 너무 느려서 일시적으로 비활성화
+@Disabled // 자동 테스트에서 제외
 @DisplayName("EmailReader 테스트")
 public class GmailReaderTest {
     @InjectMocks
