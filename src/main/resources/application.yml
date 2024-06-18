@@ -3,7 +3,7 @@ spring:
     name: Duett
 
   profiles:
-    include: gcs
+    include: gcs, youtube
 
   datasource:
     driver-class-name: org.h2.Driver

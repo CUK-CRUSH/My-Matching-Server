@@ -71,10 +71,21 @@ public class SecurityConfig {
                     .failureHandler(failureHandler) // 로그인 실패 핸들러
                     .permitAll()) // 로그인 페이지는 모든 사용자 허용
 
+            .exceptionHandling(exception -> exception
+                    // 인증 실패 핸들러
+                    .authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    })
+                    // 권한 없음 핸들러
+                    .accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                    })
+            )
             // 허용 경로 설정
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(WHITE_LIST).permitAll() // 모든 사용자 허용 경로 (모든 메소드)
-                    .anyRequest().permitAll()
+                    //.requestMatchers("/**").permitAll()
+                    .anyRequest().authenticated()
             );
 
 

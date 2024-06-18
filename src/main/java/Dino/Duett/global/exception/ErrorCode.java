@@ -25,6 +25,7 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(2002, "역할을 찾을 수 없습니다"),
     MEMBER_NOT_FOUND(2003, "사용자를 찾을 수 없습니다"),
     INVALID_TOKEN(2004, "토큰이 유효하지 않습니다"),
+    MEMBER_COIN_NOT_ENOUGH(2005, "코인이 부족합니다"),
 
     // 3000: Gmail
     INVALID_CONTENT_TYPE(3000, "올바르지 않은 메일 형식"),
@@ -37,7 +38,28 @@ public enum ErrorCode {
     IMAGE_CONVERT_FAILED(4002, "이미지 변환 실패"),
     MULTIPART_FILE_CONVERT_FAILED(4003, "MultipartFile 변환 실패"),
     IMAGE_DELETE_FAILED(4004, "이미지 삭제 실패"),
-    ;
+
+    // 4000: Profile
+    PROFILE_NOT_FOUND(5000, "프로필을 찾을 수 없습니다."),
+    GENDER_TYPE_NOT_FOUND(5001, "성별 타입을 찾을 수 없습니다."),
+    MBTI_TYPE_NOT_FOUND(5002, "MBTI 타입을 찾을 수 없습니다."),
+    PROFILE_FORBIDDEN(5003, "프로필 접근 권한이 없습니다."),
+
+    // 5000: Music
+    MUSIC_NOT_FOUND(6000, "음악을 찾을 수 없습니다"),
+
+    // 6000: Mood
+    MOOD_NOT_FOUND(7000, "무드를 찾을 수 없습니다."),
+    MOOD_FORBIDDEN(7001, "무드 접근 권한이 없습니다."),
+
+    // 7000: Tag
+    TAG_NOT_FOUND(8000, "태그를 찾을 수 없습니다."),
+    TAG_TYPE_NOT_FOUND(8001, "태그 타입을 찾을 수 없습니다."),
+    TAG_MAX_LIMIT(8002, "태그 최대 개수 초과"),
+
+    // 8000: Youtube
+    YOUTUBE_API_REQUEST_FAILED(9000, "Youtube API 요청 실패"),
+    YOUTUBE_API_REQUEST_LIMIT_EXCEEDED(9001, "Youtube API 키 사용량 초과");
 
     private final int code;
     private final String message;

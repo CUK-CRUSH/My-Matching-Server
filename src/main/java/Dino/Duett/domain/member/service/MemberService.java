@@ -8,7 +8,6 @@ import Dino.Duett.domain.member.enums.RoleName;
 import Dino.Duett.domain.member.exception.MemberException;
 import Dino.Duett.domain.member.repository.MemberRepository;
 import Dino.Duett.domain.member.repository.RoleRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,4 +57,5 @@ public class MemberService {
                 .role(member.getRole().getName())
                 .build();
     }
+
 }
