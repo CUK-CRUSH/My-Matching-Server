@@ -26,7 +26,7 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "사용자 회원가입 여부 확인")
-    @GetMapping(value = "/check")
+    @GetMapping(value = "/member/exists")
     public JsonBody<CheckMemberDto> checkMember(@NotBlank @RequestParam("phoneNumber") String phoneNumber) {
         return JsonBody.of(200, "사용자 회원가입 여부 확인 성공", memberService.existsByPhoneNumber(phoneNumber));
     }
